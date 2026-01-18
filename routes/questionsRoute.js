@@ -1,16 +1,21 @@
-const express = require("express");
-const router = express.Router();
-const {
+
+import express from "express";
+import {
+  getAllQuestions,
+  getSingleQuestion,
   createQuestion,
-  getQuestions,
-} = require("../controllers/questionsController");
-const authenticateToken = require("../middleware/authMiddleware"); 
+} from "../controllers/questionsController.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 
+const router = express.Router();
 
-// Protected route to create question
-router.post("/", authenticateToken, createQuestion);
+// GET all questions
+router.get("/", getAllQuestions);
 
-// Public route to get all questions
-router.get("/", getQuestions);
+// GET single question
+router.get("/:id", getSingleQuestion);
 
-module.exports = router;
+// POST new question (protected)
+router.post("/", authMiddleware, createQuestion);
+
+export default router;

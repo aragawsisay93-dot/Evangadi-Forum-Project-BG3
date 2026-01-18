@@ -2,6 +2,7 @@
   "name": "evangadi-forum-jbgiii",
   "version": "1.0.0",
   "description": "Forum API with user registration and login",
+  "type": "module",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",

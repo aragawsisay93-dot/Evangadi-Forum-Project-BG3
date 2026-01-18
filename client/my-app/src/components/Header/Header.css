@@ -1,0 +1,127 @@
+/* =========================
+   Header Wrapper
+========================= */
+.header {
+  width: 100%;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+/* Ethiopian color strip (top) */
+.header::before {
+  content: "";
+  display: block;
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(
+    to right,
+    #16a34a 0%,
+    #16a34a 33.333%,
+    #facc15 33.333%,
+    #facc15 66.666%,
+    #dc2626 66.666%,
+    #dc2626 100%
+  );
+}
+
+/* =========================
+   Inner Container
+   (controls left & right spacing)
+========================= */
+.header-inner {
+  max-width: 1200px;       /* Evangadi container width */
+  margin: 0 auto;         /* center */
+  padding: 14px 24px;     /* proportional left/right space */
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* =========================
+   Logo
+========================= */
+.logo img {
+  height: 42px;
+  width: auto;
+  display: block;
+}
+
+/* =========================
+   Navigation
+========================= */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.nav a {
+  text-decoration: none;
+  color: #111827;
+  font-weight: 500;
+  font-size: 15px;
+  transition: color 0.2s ease;
+}
+
+.nav a:hover {
+  color: #2563eb;
+}
+
+/* =========================
+   Auth Button
+========================= */
+.nav-btn {
+  background-color: #2563eb;
+  color: #ffffff !important;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: background-color 0.25s ease, transform 0.15s ease;
+}
+
+.nav-btn:hover {
+  background-color: #1e40af;
+  transform: translateY(-1px);
+}
+
+/* =========================
+   Tablet
+========================= */
+@media (max-width: 768px) {
+  .header-inner {
+    padding: 14px 18px;
+  }
+
+  .nav {
+    gap: 16px;
+  }
+}
+
+/* =========================
+   Mobile
+========================= */
+@media (max-width: 640px) {
+  .header-inner {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .nav {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}

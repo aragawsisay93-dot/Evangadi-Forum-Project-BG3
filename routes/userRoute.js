@@ -1,15 +1,22 @@
-const express = require("express");
+
+import express from "express";
+import {
+  register,
+  login,
+  checkUser,
+  forgotPassword,
+  resetPassword,
+} from "../controllers/userController.js";
+import auth from "../middleware/authMiddleware.js";
+
 const router = express.Router();
-const { login, register, checkUser } = require("../controllers/userController");
 
-// Import the middleware
-const authenticateToken = require("../middleware/authMiddleware");
-
-// Public routes
 router.post("/register", register);
 router.post("/login", login);
+router.get("/checkUser", auth, checkUser);
 
-// Protected route
-router.get("/check", authenticateToken, checkUser);
+// ✅ NEW
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPassword);
 
-module.exports = router;
+export default router;

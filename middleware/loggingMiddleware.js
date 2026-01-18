@@ -1,8 +1,14 @@
+// // middleware/loggingMiddleware.js
+// function logger(req, res, next) {
+//   const now = new Date();
+//   console.log(`[${now.toISOString()}] ${req.method} ${req.originalUrl}`);
+//   next();
+// }
+
+// module.exports = logger;
 // middleware/loggingMiddleware.js
-function logger(req, res, next) {
+export default function logger(req, res, next) {
   const now = new Date();
   console.log(`[${now.toISOString()}] ${req.method} ${req.originalUrl}`);
-  next(); // pass control to next middleware
+  next();
 }
-
-module.exports = logger;

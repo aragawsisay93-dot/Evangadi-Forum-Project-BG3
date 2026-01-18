@@ -1,0 +1,147 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f5f6fa;
+}
+.login-container,
+.register-container {
+  width: 100%;
+}
+
+.login-box {
+  width: 480px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.login-box h2 {
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.create-text {
+  font-size: 13px;
+  margin-bottom: 20px;
+  color: #666;
+}
+
+.create-link {
+  color: #f57c00;
+  text-decoration: none;
+}
+
+.field {
+  text-align: left;
+  margin-bottom: 12px;
+}
+
+.field input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  outline: none;
+}
+
+.password-field {
+  position: relative;
+}
+
+
+.eye-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  border: none;
+  background: transparent;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 6px;
+  color: #6b7280; /* icon color */
+}
+
+.eye-btn:hover {
+  color: #111827;
+}
+
+/* IMPORTANT: give input right padding so text doesn’t go under the icon */
+.password-field input {
+  padding-right: 42px;
+}
+
+
+
+.error {
+  display: block;
+  margin-top: 6px;
+  color: #d32f2f;
+  font-size: 12px;
+}
+
+.server-error {
+  background: #ffe8e8;
+  color: #b00020;
+  border: 1px solid #ffbdbd;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.forgot {
+  text-align: right;
+  margin: 8px 0 16px;
+}
+
+.forgot a {
+  font-size: 13px;
+  color: #f57c00;
+  text-decoration: none;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  background: #4f6ef7;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.login-btn:hover:not(:disabled) {
+  background: #3f5de0;
+}
+.forgot-row {
+  margin: 8px 0 14px;
+  text-align: right;
+}
+
+.forgot-link {
+  font-size: 13px;
+  color: #f57c00;
+  text-decoration: none;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}

@@ -1,12 +1,34 @@
-const express = require("express");
+import express from "express";
+import {
+  getAnswersByQuestion,
+  createAnswer,
+  updateAnswer,
+  deleteAnswer,
+  reactToAnswer,
+  getCommentsByAnswer,
+  createComment,
+} from "../controllers/answersController.js";
+import authMiddleware from "../middleware/authMiddleware.js";
+
 const router = express.Router();
-const { addAnswer, getAnswers } = require("../controllers/answersController");
-const authenticateToken = require("../middleware/authMiddleware"); // ✅ updated path
 
-// Protected route to add an answer
-router.post("/", authenticateToken, addAnswer);
+// GET answers for a question
+router.get("/:questionId", getAnswersByQuestion);
 
-// Public route to get answers for a question
-router.get("/:questionid", getAnswers);
+// POST answer (protected)
+router.post("/:questionId", authMiddleware, createAnswer);
 
-module.exports = router;
+// ✅ EDIT answer (protected)
+router.put("/:answerId", authMiddleware, updateAnswer);
+
+// ✅ DELETE answer (protected)
+router.delete("/:answerId", authMiddleware, deleteAnswer);
+
+// ✅ LIKE/DISLIKE toggle (protected)
+router.post("/:answerId/react", authMiddleware, reactToAnswer);
+
+// ✅ COMMENTS
+router.get("/:answerId/comments", getCommentsByAnswer);
+router.post("/:answerId/comments", authMiddleware, createComment);
+
+export default router;

@@ -1,0 +1,33 @@
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
+  position: relative; /* ✅ required for ::before overlay */
+  overflow: hidden;
+
+  background-image: url("../../asset/Images/10004.png"); /* ✅ correct folder */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  padding: 40px;
+}
+
+.app-main::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: white;
+}
+
+.app-main > * {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}

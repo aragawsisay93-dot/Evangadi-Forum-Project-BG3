@@ -1,0 +1,59 @@
+.how-container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 18px;
+}
+
+.how-title {
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 32px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* 🔵 Blue bordered box */
+.how-box {
+  border: 2px solid #2563eb; /* blue */
+  border-radius: 10px;
+  padding: 22px 26px;
+  margin-bottom: 28px;
+  background: #ffffff;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.08);
+}
+
+/* Section titles */
+.how-box h2 {
+  margin-bottom: 12px;
+  color: #2563eb;
+  font-size: 22px;
+}
+
+/* Text */
+.how-box p,
+.how-box li {
+  color: #374151;
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+/* Lists */
+.how-box ol {
+  padding-left: 20px;
+}
+
+.how-box ul {
+  padding-left: 20px;
+  margin-top: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .how-box {
+    padding: 18px;
+  }
+
+  .how-title {
+    font-size: 26px;
+  }
+}
