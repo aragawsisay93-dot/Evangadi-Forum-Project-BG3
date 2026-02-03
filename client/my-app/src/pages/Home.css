@@ -1,10 +1,30 @@
+/* =========================
+   Home Layout
+========================= */
 .home {
   max-width: 980px;
   margin: 0 auto;
   padding: 20px 16px 40px;
 }
 
-/* Top section */
+/* =========================
+   Welcome text
+========================= */
+.welcome-top {
+  text-align: center;
+  margin-bottom: 14px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.welcome-top span {
+  font-weight: 600;
+  color: #2563eb;
+}
+
+/* =========================
+   Top section (Ask + Search)
+========================= */
 .home-header {
   display: flex;
   align-items: center;
@@ -26,6 +46,16 @@
   opacity: 0.9;
 }
 
+/* =========================
+   Search
+========================= */
+.home-search-form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex: 1; /* input fills remaining space */
+}
+
 .home-search {
   flex: 1;
   padding: 8px 12px;
@@ -34,7 +64,35 @@
   font-size: 13px;
 }
 
-/* Question list */
+.home-search-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.home-search-btn:hover {
+  opacity: 0.9;
+}
+
+.home-search-btn.ghost {
+  background: transparent;
+  color: #111827;
+  border: 1px solid #cbd5e1;
+}
+
+.home-search-label {
+  margin: 8px 0 14px;
+  font-size: 13px;
+  color: #374151;
+}
+
+/* =========================
+   Question list
+========================= */
 .question-list {
   list-style: none;
   padding: 0;
@@ -61,22 +119,32 @@
   background: #f9fafb;
 }
 
-/* Left content */
+/* =========================
+   Left content
+========================= */
 .question-left {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.avatar {
-  width: 40px;
-  height: 40px;
-  background: #f3f4f6;
+.avatar-wrap {
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-size: 18px;
+  overflow: hidden;
+  flex: 0 0 44px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
 }
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 
 .question-title {
   font-size: 14px;
@@ -89,13 +157,17 @@
   color: #6b7280;
 }
 
-/* Arrow */
+/* =========================
+   Arrow
+========================= */
 .question-arrow {
   font-size: 22px;
   color: #2563eb;
 }
 
-/* Loading & error */
+/* =========================
+   Loading & error
+========================= */
 .home-loading,
 .home-error {
   text-align: center;
@@ -106,7 +178,9 @@
   color: #dc2626;
 }
 
-/* Responsive */
+/* =========================
+   Responsive
+========================= */
 @media (max-width: 520px) {
   .question-title {
     font-size: 13px;

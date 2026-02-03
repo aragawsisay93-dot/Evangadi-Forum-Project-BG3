@@ -1,3 +1,10 @@
+/* =========================
+   QuestionDetails.css (FULL UPDATED)
+   - Keeps your current design
+   - Adds avatar image support for answers + comments
+   - Fixes welcome class naming consistency
+========================= */
+
 /* shared page base */
 .qd-page {
   background: #f5f6fa;
@@ -49,6 +56,68 @@
   font-size: 14px;
   margin-bottom: 10px;
   padding: 6px 0;
+}
+
+/* =========================
+   SEARCH BAR
+========================= */
+.qd-search {
+  display: flex;
+  gap: 10px;
+  margin: 12px 0 18px;
+}
+
+.qd-search-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  outline: none;
+}
+
+.qd-search-input:focus {
+  border-color: #94a3b8;
+}
+
+.qd-search-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #2563eb;
+  color: #fff;
+}
+
+.qd-search-btn:hover {
+  filter: brightness(0.97);
+}
+
+/* =========================
+   WELCOME TEXT
+========================= */
+.welcome-top {
+  text-align: center;
+  margin-bottom: 14px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.welcome-top span {
+  font-weight: 600;
+  color: #2563eb;
+}
+
+/* (kept for compatibility if you used it somewhere else) */
+.welcome-text {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.welcome-text span {
+  color: #2563eb;
+  font-weight: 600;
 }
 
 /* =========================
@@ -134,6 +203,50 @@
 }
 
 /* =========================
+   TAGS (Ask page)
+========================= */
+.aq-tags {
+  margin: 10px 0 14px;
+}
+
+.aq-tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.aq-tag-pill {
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.aq-tag-pill:hover {
+  background: #f3f4f6;
+}
+
+.aq-tag-x {
+  margin-left: 6px;
+  font-weight: 700;
+}
+
+.aq-tag-input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  outline: none;
+}
+
+.aq-tag-input:focus {
+  border-color: #f59e0b;
+}
+
+/* =========================
    ANSWER PAGE styles
 ========================= */
 .qd-question {
@@ -214,6 +327,7 @@
   border-top: 0;
 }
 
+/* ✅ Avatar container (keeps your size, now supports images) */
 .qd-avatar {
   width: 42px;
   height: 42px;
@@ -223,8 +337,18 @@
   display: grid;
   place-items: center;
   flex: 0 0 42px;
+  overflow: hidden; /* ✅ important for circle crop */
 }
 
+/* ✅ When using <img class="qd-avatar-img" ...> */
+.qd-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* (kept for compatibility if you still use icon somewhere) */
 .qd-avatar-icon {
   font-size: 18px;
 }
@@ -245,6 +369,133 @@
   color: #6b7280;
 }
 
+/* =========================
+   REACTIONS + OWNER ACTIONS
+========================= */
+.qd-react-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.qd-react-btn {
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.qd-react-btn:hover {
+  background: #f7f7f7;
+}
+
+.qd-count {
+  margin-left: 6px;
+  font-weight: 600;
+}
+
+.qd-owner-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.qd-mini-btn {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.qd-mini-btn.ghost {
+  background: transparent;
+}
+
+.qd-mini-btn.danger {
+  border-color: #ffbcbc;
+  color: #b10000;
+}
+
+/* =========================
+   COMMENTS
+========================= */
+.qd-comments {
+  margin-top: 12px;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.qd-comments-list {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* ✅ Updated comment layout to support avatar image */
+.qd-comment {
+  background: #f9fafb;
+  border: 1px solid #eef2f7;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;          /* ✅ */
+  gap: 10px;              /* ✅ */
+  align-items: flex-start;/* ✅ */
+}
+
+/* ✅ Comment avatar image */
+.qd-comment-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #e5e7eb;
+  background: #f3f4f6;
+  flex: 0 0 28px;
+}
+
+/* ✅ Wrap comment text */
+.qd-comment-content {
+  flex: 1;
+}
+
+.qd-comment-user {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #374151;
+}
+
+.qd-comment-text {
+  font-size: 13px;
+  color: #111827;
+}
+
+.qd-comment-form {
+  display: flex;
+  gap: 8px;
+}
+
+.qd-comment-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+}
+
+.qd-comment-input:focus {
+  border-color: #94a3b8;
+}
+
+/* =========================
+   ANSWER FORM
+========================= */
 .qd-form {
   margin-top: 14px;
   padding: 14px;
@@ -297,152 +548,8 @@
   .aq-form {
     max-width: 100%;
   }
-}
-.welcome-text {
-  margin: 0 0 12px;
-  font-size: 18px;
-  font-weight: 500;
-  color: #111827;
-}
 
-.welcome-text span {
-  color: #2563eb;
-  font-weight: 600;
-}
-/* Tags wrapper */
-.aq-tags {
-  margin: 10px 0 14px;
-}
-
-/* Pills row */
-.aq-tags-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-/* Tag pill button */
-.aq-tag-pill {
-  border: 1px solid #d1d5db;
-  background: #f9fafb;
-  padding: 6px 10px;
-  border-radius: 999px;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.aq-tag-pill:hover {
-  background: #f3f4f6;
-}
-
-.aq-tag-x {
-  margin-left: 6px;
-  font-weight: 700;
-}
-
-/* Tag input */
-.aq-tag-input {
-  width: 100%;
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  outline: none;
-}
-
-.aq-tag-input:focus {
-  border-color: #f59e0b;
-}
-.qd-react-row {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-top: 10px;
-  flex-wrap: wrap;
-}
-
-.qd-react-btn {
-  border: 1px solid #e5e7eb;
-  background: #fff;
-  padding: 6px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 13px;
-}
-
-.qd-react-btn:hover {
-  background: #f7f7f7;
-}
-
-.qd-count {
-  margin-left: 6px;
-  font-weight: 600;
-}
-
-.qd-owner-actions {
-  margin-left: auto;
-  display: flex;
-  gap: 8px;
-}
-
-.qd-mini-btn {
-  border: 1px solid #d1d5db;
-  background: #fff;
-  padding: 6px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 13px;
-}
-
-.qd-mini-btn.ghost {
-  background: transparent;
-}
-
-.qd-mini-btn.danger {
-  border-color: #ffbcbc;
-  color: #b10000;
-}
-
-.qd-comments {
-  margin-top: 12px;
-  border-top: 1px solid #eee;
-  padding-top: 10px;
-}
-
-.qd-comments-list {
-  display: grid;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.qd-comment {
-  background: #f9fafb;
-  border: 1px solid #eef2f7;
-  border-radius: 8px;
-  padding: 10px;
-}
-
-.qd-comment-user {
-  font-size: 12px;
-  font-weight: 600;
-  margin-bottom: 4px;
-  color: #374151;
-}
-
-.qd-comment-text {
-  font-size: 13px;
-  color: #111827;
-}
-
-.qd-comment-form {
-  display: flex;
-  gap: 8px;
-}
-
-.qd-comment-input {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  outline: none;
+  .qd-owner-actions {
+    margin-left: 0; /* better wrap on small screens */
+  }
 }

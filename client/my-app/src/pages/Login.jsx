@@ -1,3 +1,4 @@
+// export default Login;
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
@@ -42,20 +43,31 @@ function Login() {
         password: form.password,
       });
 
-      const { token, user } = res.data;
+      const token = res.data?.token;
+      const user = res.data?.user;
 
       if (!token) {
         setServerError("Login succeeded but token was not returned.");
         return;
       }
 
+      // ✅ SAVE TO localStorage (this makes Welcome show immediately)
+      localStorage.setItem("token", token);
+      if (user) {
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("userid", String(user.userid));
+        localStorage.setItem("username", String(user.username));
+      }
+
+      // ✅ Update AuthContext
       setAuth({ token, user });
+
       navigate("/", { replace: true });
     } catch (err) {
       setServerError(
         err?.response?.data?.message ||
           err?.response?.data?.error ||
-          "Invalid email or password"
+          "Invalid email or password",
       );
     } finally {
       setLoading(false);
@@ -113,7 +125,6 @@ function Login() {
             )}
           </div>
 
-          {/* ✅ Forgot password link */}
           <p className="forgot-row">
             <Link className="forgot-link" to="/forgot-password">
               Forgot password?

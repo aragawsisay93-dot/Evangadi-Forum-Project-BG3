@@ -17,6 +17,7 @@ export const getAnswersByQuestion = async (req, res) => {
         a.userid,
         a.created_at,
         u.username,
+         u.avatar_url,
 
         -- counts
         COALESCE(l.likeCount, 0) AS likeCount,
@@ -49,7 +50,7 @@ export const getAnswersByQuestion = async (req, res) => {
       WHERE a.questionid = ?
       ORDER BY a.created_at DESC
       `,
-      [Number(questionId)]
+      [Number(questionId)],
     );
 
     res.json(rows);
@@ -232,13 +233,14 @@ export const getCommentsByAnswer = async (req, res) => {
         c.userid,
         c.comment,
         c.created_at,
-        u.username
+        u.username,
+         u.avatar_url
       FROM answer_comments c
       JOIN users u ON u.userid = c.userid
       WHERE c.answerid = ?
       ORDER BY c.created_at ASC
       `,
-      [Number(answerId)]
+      [Number(answerId)],
     );
 
     res.json(rows);

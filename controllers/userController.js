@@ -70,8 +70,8 @@ export const login = async (req, res, next) => {
     }
 
     const [rows] = await db.query(
-      "SELECT userid, username, firstname, lastname, email, password FROM users WHERE email = ? LIMIT 1",
-      [email]
+      "SELECT userid, username, firstname, lastname, email, password, avatar_url FROM users WHERE email = ? LIMIT 1",
+      [email],
     );
 
     if (rows.length === 0) {
@@ -124,6 +124,7 @@ export const login = async (req, res, next) => {
       firstname: userRow.firstname,
       lastname: userRow.lastname,
       email: userRow.email,
+      avatar_url: userRow.avatar_url,
     };
 
     return res.json({ message: "Login successful", token, user });
