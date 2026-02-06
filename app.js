@@ -88,33 +88,43 @@ const __dirname = path.dirname(__filename);
 // Middleware
 // ============================
 
-// ✅ CORS: allow your Netlify domain + local dev + your domain(s)
+// ✅ CORS: allow Netlify + domain(s) + local dev (including Vite 517x)
 const allowedOrigins = [
-  process.env.CLIENT_URL, // e.g. https://your-site.netlify.app
+  process.env.CLIENT_URL, // e.g. https://evangadiforumaragaw.netlify.app
+  "https://evangadiforumaragaw.netlify.app",
   "https://agsisay.com",
   "https://www.agsisay.com",
-  "http://localhost:5173",
   "http://localhost:3000",
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:5175",
 ].filter(Boolean);
+
+// ✅ allow any localhost Vite port 5170-5179 (so you don’t keep editing)
+const viteLocalhostRegex = /^http:\/\/localhost:517\d$/;
 
 const corsOptions = {
   origin: (origin, cb) => {
-    // allow Postman / curl / server-to-server requests (no origin header)
+    // allow Postman/curl/no-origin requests
     if (!origin) return cb(null, true);
 
-    // allow only whitelisted origins
+    // allow exact matches
     if (allowedOrigins.includes(origin)) return cb(null, true);
 
-    // block silently (don't crash the API)
+    // allow vite ports dynamically (5170-5179)
+    if (viteLocalhostRegex.test(origin)) return cb(null, true);
+
     return cb(null, false);
   },
   credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 204,
 };
 
-// ✅ Apply CORS to all routes
 app.use(cors(corsOptions));
 
-// ✅ Handle preflight requests (IMPORTANT FIX: use regex, not "*")
+// ✅ Handle preflight requests for ALL routes
 app.options(/.*/, cors(corsOptions));
 
 app.use(express.json());
@@ -124,9 +134,28 @@ app.use(logger);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ============================
-// Health checks
+// Health / Info routes
 // ============================
 app.get("/", (req, res) => res.send("Evangadi Forum API is running!"));
+
+// ✅ So visiting /api in browser won’t show “Route not found”
+app.get("/api", (req, res) => {
+  res.json({
+    ok: true,
+    message: "Evangadi Forum API base is running ✅",
+    endpoints: {
+      // NOTE: your frontend error shows /api/user/login + /api/user/checkUser
+      // so we keep BOTH paths (users + user)
+      login: "POST /api/user/login (alias) OR POST /api/users/login",
+      register: "POST /api/user/register (alias) OR POST /api/users/register",
+      checkUser: "GET /api/user/checkUser (alias) OR GET /api/users/checkUser",
+      questions: "GET /api/questions",
+      answers: "GET /api/answers/:questionId",
+      profile: "GET /api/profile",
+      dbHealth: "GET /api/health/db",
+    },
+  });
+});
 
 // ✅ DB connectivity check
 app.get("/api/health/db", async (req, res, next) => {
@@ -144,8 +173,11 @@ app.get("/api/health/db", async (req, res, next) => {
 // API Routes
 // ============================
 
-// ✅ If your frontend calls /api/users/login and /api/users/register
+// ✅ Main routes
 app.use("/api/users", userRoutes);
+
+// ✅ Compatibility alias for your current frontend calls (/api/user/...)
+app.use("/api/user", userRoutes);
 
 app.use("/api/questions", questionsRoutes);
 app.use("/api/answers", answersRoutes);
@@ -169,4 +201,6 @@ app.use(errorHandler);
 // ============================
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log("Allowed origins:", allowedOrigins);
 });
+
