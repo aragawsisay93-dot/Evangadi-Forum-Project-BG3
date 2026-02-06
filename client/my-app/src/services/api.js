@@ -16,27 +16,24 @@
 
 import axios from "axios";
 
-// ============================
-// Base URL
-// ============================
-// 👉 Netlify uses VITE_API_BASE_URL (production)
-// 👉 Fallback is local development
-const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5500";
+// ✅ Production base (Netlify env) should include /api
+// Example: https://evangadi-forum-project-bg3-production.up.railway.app/api
+const baseURL =
+  import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ||
+  "http://localhost:5500";
 
-// ============================
-// Axios instance
-// ============================
+// ✅ Ensure /api is included (avoid /user/login mistakes)
+const apiBase = baseURL.endsWith("/api") ? baseURL : `${baseURL}/api`;
+
 const api = axios.create({
-  baseURL,
+  baseURL: apiBase,
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true,
+  withCredentials: false, // ✅ JWT in headers; set true ONLY if using cookies
 });
 
-// ============================
-// Attach JWT token automatically
-// ============================
+// ✅ Attach JWT token automatically
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
