@@ -59,6 +59,7 @@
 
 // app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
+// app.js
 import "dotenv/config";
 
 import express from "express";
@@ -87,26 +88,34 @@ const __dirname = path.dirname(__filename);
 // Middleware
 // ============================
 
-// ✅ CORS: allow your Netlify domain + local dev
+// ✅ CORS: allow your Netlify domain + local dev + your domain(s)
 const allowedOrigins = [
   process.env.CLIENT_URL, // e.g. https://your-site.netlify.app
+  "https://agsisay.com",
+  "https://www.agsisay.com",
   "http://localhost:5173",
   "http://localhost:3000",
 ].filter(Boolean);
 
-app.use(
-  cors({
-    origin: (origin, cb) => {
-      // allow Postman / server-to-server / curl (no origin)
-      if (!origin) return cb(null, true);
+const corsOptions = {
+  origin: (origin, cb) => {
+    // allow Postman / curl / server-to-server requests (no origin header)
+    if (!origin) return cb(null, true);
 
-      if (allowedOrigins.includes(origin)) return cb(null, true);
+    // allow only whitelisted origins
+    if (allowedOrigins.includes(origin)) return cb(null, true);
 
-      return cb(new Error(`CORS blocked for origin: ${origin}`), false);
-    },
-    credentials: true,
-  }),
-);
+    // block silently (don't crash the API)
+    return cb(null, false);
+  },
+  credentials: true,
+};
+
+// ✅ Apply CORS to all routes
+app.use(cors(corsOptions));
+
+// ✅ Handle preflight requests (IMPORTANT FIX: use regex, not "*")
+app.options(/.*/, cors(corsOptions));
 
 app.use(express.json());
 app.use(logger);
@@ -119,6 +128,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // ============================
 app.get("/", (req, res) => res.send("Evangadi Forum API is running!"));
 
+// ✅ DB connectivity check
 app.get("/api/health/db", async (req, res, next) => {
   try {
     await testDBConnection();
@@ -133,9 +143,8 @@ app.get("/api/health/db", async (req, res, next) => {
 // ============================
 // API Routes
 // ============================
-// ✅ IMPORTANT FIX:
-// If your frontend calls /api/users/login and /api/users/register
-// mount here as /api/users (plural)
+
+// ✅ If your frontend calls /api/users/login and /api/users/register
 app.use("/api/users", userRoutes);
 
 app.use("/api/questions", questionsRoutes);
@@ -158,4 +167,6 @@ app.use(errorHandler);
 // ============================
 // Start server
 // ============================
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
