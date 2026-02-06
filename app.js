@@ -88,31 +88,52 @@ const __dirname = path.dirname(__filename);
 // Middleware
 // ============================
 
-// ✅ CORS: allow Netlify + domain(s) + local dev (including Vite 517x)
+// ✅ allow any localhost Vite port 5170-5179 (so you don’t keep editing)
+const viteLocalhostRegex = /^http:\/\/localhost:517\d$/;
+
+// ✅ allow Cloudflare Pages (all branches / previews) if you want
+const cloudflarePagesRegex = /^https:\/\/.*\.pages\.dev$/;
+
+// ✅ CLIENT_URL can be 1 URL or multiple separated by comma
+const envClientUrls = (process.env.CLIENT_URL || "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+// ✅ CORS: allow Netlify + domain(s) + local dev + Cloudflare Pages
 const allowedOrigins = [
-  process.env.CLIENT_URL, // e.g. https://evangadiforumaragaw.netlify.app
+  ...envClientUrls,
+
+  // Netlify (your current one)
   "https://evangadiforumaragaw.netlify.app",
+
+  // Cloudflare Pages (your deployed frontend)
+  "https://evangadi-forum-bg3.pages.dev",
+
+  // your domain(s)
   "https://agsisay.com",
   "https://www.agsisay.com",
+
+  // local dev
   "http://localhost:3000",
   "http://localhost:5173",
   "http://localhost:5174",
   "http://localhost:5175",
 ].filter(Boolean);
 
-// ✅ allow any localhost Vite port 5170-5179 (so you don’t keep editing)
-const viteLocalhostRegex = /^http:\/\/localhost:517\d$/;
-
 const corsOptions = {
   origin: (origin, cb) => {
     // allow Postman/curl/no-origin requests
     if (!origin) return cb(null, true);
 
-    // allow exact matches
+    // ✅ allow exact matches
     if (allowedOrigins.includes(origin)) return cb(null, true);
 
-    // allow vite ports dynamically (5170-5179)
+    // ✅ allow vite ports dynamically (5170-5179)
     if (viteLocalhostRegex.test(origin)) return cb(null, true);
+
+    // ✅ allow Cloudflare Pages previews (optional, but useful)
+    if (cloudflarePagesRegex.test(origin)) return cb(null, true);
 
     return cb(null, false);
   },
@@ -144,8 +165,6 @@ app.get("/api", (req, res) => {
     ok: true,
     message: "Evangadi Forum API base is running ✅",
     endpoints: {
-      // NOTE: your frontend error shows /api/user/login + /api/user/checkUser
-      // so we keep BOTH paths (users + user)
       login: "POST /api/user/login (alias) OR POST /api/users/login",
       register: "POST /api/user/register (alias) OR POST /api/users/register",
       checkUser: "GET /api/user/checkUser (alias) OR GET /api/users/checkUser",
