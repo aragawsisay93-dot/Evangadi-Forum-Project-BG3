@@ -58,6 +58,7 @@
 // setInterval(() => console.log("server alive..."), 30000);
 
 // app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 import "dotenv/config";
 
 import express from "express";
@@ -78,27 +79,30 @@ import { testDBConnection } from "./db/dbConfig.js";
 const app = express();
 const PORT = process.env.PORT || 5500;
 
-// ✅ Needed for serving uploads folder in ESM
+// ✅ Needed for serving static files in ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ============================
-// ✅ CORS (Netlify + Local + Safe)
+// Middleware
 // ============================
+
+// ✅ CORS: allow your Netlify domain + local dev
 const allowedOrigins = [
-  process.env.CLIENT_URL, // ✅ your Netlify site in production
-  "http://localhost:5173", // ✅ local dev
+  process.env.CLIENT_URL, // e.g. https://your-site.netlify.app
+  "http://localhost:5173",
+  "http://localhost:3000",
 ].filter(Boolean);
 
 app.use(
   cors({
     origin: (origin, cb) => {
-      // allow requests with no origin (Postman, curl, server-to-server)
+      // allow Postman / server-to-server / curl (no origin)
       if (!origin) return cb(null, true);
 
       if (allowedOrigins.includes(origin)) return cb(null, true);
 
-      return cb(new Error(`CORS blocked: ${origin}`), false);
+      return cb(new Error(`CORS blocked for origin: ${origin}`), false);
     },
     credentials: true,
   }),
@@ -107,13 +111,14 @@ app.use(
 app.use(express.json());
 app.use(logger);
 
-// ✅ Serve uploaded files (avatars)
+// ✅ Serve uploaded files (avatar images)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// ✅ Root test
+// ============================
+// Health checks
+// ============================
 app.get("/", (req, res) => res.send("Evangadi Forum API is running!"));
 
-// ✅ DB connectivity check
 app.get("/api/health/db", async (req, res, next) => {
   try {
     await testDBConnection();
@@ -125,17 +130,32 @@ app.get("/api/health/db", async (req, res, next) => {
   }
 });
 
-// ✅ API routes
-app.use("/api/user", userRoutes);
+// ============================
+// API Routes
+// ============================
+// ✅ IMPORTANT FIX:
+// If your frontend calls /api/users/login and /api/users/register
+// mount here as /api/users (plural)
+app.use("/api/users", userRoutes);
+
 app.use("/api/questions", questionsRoutes);
 app.use("/api/answers", answersRoutes);
 app.use("/api/profile", profileRoute);
 
-// ✅ 404 + error handler
-app.use((req, res) => res.status(404).json({ message: "Route not found" }));
+// ============================
+// 404 + Error handler
+// ============================
+app.use((req, res) => {
+  res.status(404).json({
+    message: "Route not found",
+    method: req.method,
+    path: req.originalUrl,
+  });
+});
+
 app.use(errorHandler);
 
-// 🚫 Remove keep-alive interval (not needed on Railway, spams logs)
-// setInterval(() => console.log("server alive..."), 30000);
-
+// ============================
+// Start server
+// ============================
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
