@@ -1,4 +1,4 @@
-// app.js (FULL UPDATED — backend entry file, with RELIABLE Netlify CORS preflight fix)
+// app.js (FULL UPDATED — Railway + Netlify CORS + preflight fix + marker + version)
 import "dotenv/config";
 
 import express from "express";
@@ -80,14 +80,14 @@ const corsOptions = {
 
     if (ok) return cb(null, true);
 
-    // ✅ debug in Railway logs
+    // helpful in Railway logs
     console.log("❌ CORS blocked origin:", origin);
 
-    // ✅ do NOT throw error — just block
+    // block without throwing (keeps server stable)
     return cb(null, false);
   },
 
-  // ✅ Frontend uses JWT Authorization header (NOT cookies)
+  // ✅ Your frontend uses JWT in Authorization header (NOT cookies)
   credentials: false,
 
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -95,11 +95,10 @@ const corsOptions = {
   optionsSuccessStatus: 204,
 };
 
-// ✅ Apply CORS for normal requests
+// ✅ Apply CORS for normal requests (must be BEFORE routes)
 app.use(cors(corsOptions));
 
-// ✅ HARDENED preflight handler (Express 5 safe)
-// This guarantees OPTIONS gets Access-Control-* headers
+// ✅ HARDENED preflight handler (guarantees OPTIONS has CORS headers)
 app.use((req, res, next) => {
   if (req.method !== "OPTIONS") return next();
 
@@ -110,12 +109,9 @@ app.use((req, res, next) => {
     res.setHeader("Vary", "Origin");
     res.setHeader(
       "Access-Control-Allow-Methods",
-      "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+      "GET,POST,PUT,PATCH,DELETE,OPTIONS",
     );
-    res.setHeader(
-      "Access-Control-Allow-Headers",
-      "Content-Type,Authorization"
-    );
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
     res.setHeader("Access-Control-Max-Age", "86400");
     return res.status(204).end();
   }
@@ -138,21 +134,12 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // ============================
 app.get("/", (req, res) => res.send("Evangadi Forum API is running!"));
 
-// ✅ Proves Railway deployed your latest code (and shows commit if available)
-app.get("/api/health/version", (req, res) => {
-  res.json({
-    ok: true,
-    commit: process.env.RAILWAY_GIT_COMMIT_SHA || "no-sha",
-    time: new Date().toISOString(),
-    client_url: process.env.CLIENT_URL || "(not set)",
-  });
-});
-
-// ✅ So visiting /api in browser won’t show “Route not found”
+// ✅ IMPORTANT: Marker proves Railway is running the latest code
 app.get("/api", (req, res) => {
   res.json({
     ok: true,
     message: "Evangadi Forum API base is running ✅",
+    marker: "CORS-FIX-v2", // 👈 if you don't see this in production, Railway isn't running this file
     endpoints: {
       login: "POST /api/user/login (alias) OR POST /api/users/login",
       register: "POST /api/user/register (alias) OR POST /api/users/register",
@@ -163,6 +150,17 @@ app.get("/api", (req, res) => {
       dbHealth: "GET /api/health/db",
       version: "GET /api/health/version",
     },
+  });
+});
+
+// ✅ Version endpoint (also proves the deployed code is yours)
+app.get("/api/health/version", (req, res) => {
+  res.json({
+    ok: true,
+    marker: "CORS-FIX-v2",
+    commit: process.env.RAILWAY_GIT_COMMIT_SHA || "no-sha",
+    time: new Date().toISOString(),
+    client_url: process.env.CLIENT_URL || "(not set)",
   });
 });
 
@@ -178,7 +176,7 @@ app.get("/api/health/db", async (req, res) => {
       console.error("❌ AggregateError details:");
       err.errors.forEach((e, i) => {
         console.error(
-          `  [${i}] name=${e?.name} code=${e?.code} message=${e?.message}`
+          `  [${i}] name=${e?.name} code=${e?.code} message=${e?.message}`,
         );
       });
     }
@@ -215,7 +213,6 @@ app.use("/api/profile", profileRoute);
 // 404 + Error Handler
 // ============================
 
-// ✅ Not found
 app.use((req, res) => {
   res.status(404).json({
     message: "Route not found",
@@ -224,7 +221,6 @@ app.use((req, res) => {
   });
 });
 
-// ✅ Central error handler
 app.use(errorHandler);
 
 // ============================
@@ -240,13 +236,10 @@ server.on("error", (err) => {
   console.error("❌ SERVER LISTEN ERROR:", err);
 });
 
-process.on("exit", (code) => {
-  console.log("⚠️ Process exiting with code:", code);
-});
 process.on("uncaughtException", (err) => {
   console.error("❌ Uncaught exception:", err);
 });
+
 process.on("unhandledRejection", (err) => {
   console.error("❌ Unhandled rejection:", err);
 });
-
