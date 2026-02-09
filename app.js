@@ -1,174 +1,3 @@
-// // app.js (FULL UPDATED — keep this as your backend entry file)
-// import "dotenv/config";
-
-// import express from "express";
-// import cors from "cors";
-// import path from "path";
-// import { fileURLToPath } from "url";
-
-// import logger from "./middleware/loggingMiddleware.js";
-// import errorHandler from "./middleware/errorHandler.js";
-
-// import userRoutes from "./routes/userRoute.js";
-// import questionsRoutes from "./routes/questionsRoute.js";
-// import answersRoutes from "./routes/answersRoute.js";
-// import profileRoute from "./routes/profileRoute.js";
-
-// import { testDBConnection } from "./db/dbConfig.js";
-
-// const app = express();
-// const PORT = process.env.PORT || 5500;
-
-// // ✅ Needed for serving static files in ESM
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
-
-// // ============================
-// // CORS / Middleware
-// // ============================
-
-// // ✅ allow any localhost Vite port 5170-5179
-// const viteLocalhostRegex = /^http:\/\/localhost:517\d$/;
-
-// // ✅ allow Cloudflare Pages (all branches / previews)
-// const cloudflarePagesRegex = /^https:\/\/.*\.pages\.dev$/;
-
-// // ✅ allow Netlify previews + all netlify subdomains
-// //    (includes deploy previews + your main site)
-// const netlifyRegex = /^https:\/\/.*\.netlify\.app$/;
-
-// // ✅ CLIENT_URL can be 1 URL or multiple separated by comma
-// // Example in Railway:
-// // CLIENT_URL=https://your-site.netlify.app,http://localhost:5173
-// const envClientUrls = (process.env.CLIENT_URL || "")
-//   .split(",")
-//   .map((s) => s.trim())
-//   .filter(Boolean);
-
-// // ✅ CORS allowed origins:
-// // - Prefer environment variable CLIENT_URL (Railway)
-// // - Plus optional known domains (your portfolio, etc.)
-// // - Local dev
-// const allowedOrigins = [
-//   ...envClientUrls,
-
-//   // your domain(s) (optional)
-//   "https://agsisay.com",
-//   "https://www.agsisay.com",
-
-//   // local dev (optional)
-//   "http://localhost:3000",
-//   "http://localhost:5173",
-//   "http://localhost:5174",
-//   "http://localhost:5175",
-// ].filter(Boolean);
-
-// const corsOptions = {
-//   origin: (origin, cb) => {
-//     // allow Postman/curl/no-origin requests
-//     if (!origin) return cb(null, true);
-
-//     // ✅ allow exact matches
-//     if (allowedOrigins.includes(origin)) return cb(null, true);
-
-//     // ✅ allow vite ports dynamically (5170-5179)
-//     if (viteLocalhostRegex.test(origin)) return cb(null, true);
-
-//     // ✅ allow Cloudflare Pages previews
-//     if (cloudflarePagesRegex.test(origin)) return cb(null, true);
-
-//     // ✅ allow any Netlify site/previews
-//     if (netlifyRegex.test(origin)) return cb(null, true);
-
-//     return cb(null, false);
-//   },
-//   credentials: true,
-//   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-//   allowedHeaders: ["Content-Type", "Authorization"],
-//   optionsSuccessStatus: 204,
-// };
-
-// app.use(cors(corsOptions));
-
-// // ✅ Handle preflight requests for ALL routes
-// app.options(/.*/, cors(corsOptions));
-
-// app.use(express.json());
-// app.use(logger);
-
-// // ✅ Serve uploaded files (avatar images)
-// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-// // ============================
-// // Health / Info routes
-// // ============================
-// app.get("/", (req, res) => res.send("Evangadi Forum API is running!"));
-
-// // ✅ So visiting /api in browser won’t show “Route not found”
-// app.get("/api", (req, res) => {
-//   res.json({
-//     ok: true,
-//     message: "Evangadi Forum API base is running ✅",
-//     endpoints: {
-//       login: "POST /api/user/login (alias) OR POST /api/users/login",
-//       register: "POST /api/user/register (alias) OR POST /api/users/register",
-//       checkUser: "GET /api/user/checkUser (alias) OR GET /api/users/checkUser",
-//       questions: "GET /api/questions",
-//       answers: "GET /api/answers/:questionId",
-//       profile: "GET /api/profile",
-//       dbHealth: "GET /api/health/db",
-//     },
-//   });
-// });
-
-// // ✅ DB connectivity check
-// app.get("/api/health/db", async (req, res, next) => {
-//   try {
-//     await testDBConnection();
-//     res.json({ ok: true, message: "DB connected ✅" });
-//   } catch (err) {
-//     err.status = 500;
-//     err.message = "DB connection failed ❌: " + (err?.message || String(err));
-//     next(err);
-//   }
-// });
-
-// // ============================
-// // API Routes
-// // ============================
-
-// // ✅ Main routes
-// app.use("/api/users", userRoutes);
-
-// // ✅ Compatibility alias for your current frontend calls (/api/user/...)
-// app.use("/api/user", userRoutes);
-
-// app.use("/api/questions", questionsRoutes);
-// app.use("/api/answers", answersRoutes);
-// app.use("/api/profile", profileRoute);
-
-// // ============================
-// // 404 + Error handler
-// // ============================
-// app.use((req, res) => {
-//   res.status(404).json({
-//     message: "Route not found",
-//     method: req.method,
-//     path: req.originalUrl,
-//   });
-// });
-
-// app.use(errorHandler);
-
-// // ============================
-// // Start server
-// // ============================
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`);
-//   console.log("CLIENT_URL:", process.env.CLIENT_URL || "(not set)");
-//   console.log("Allowed origins:", allowedOrigins);
-// });
-// app.js (FULL UPDATED — backend entry file)
 // app.js (FULL UPDATED — backend entry file)
 import "dotenv/config";
 
@@ -195,66 +24,87 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ============================
-// CORS / Middleware
+// CORS (Netlify + local + previews)
 // ============================
 
 // ✅ allow any localhost Vite port 5170-5179
 const viteLocalhostRegex = /^http:\/\/localhost:517\d$/;
 
-// ✅ allow Cloudflare Pages (all branches / previews)
+// ✅ allow Cloudflare Pages previews
 const cloudflarePagesRegex = /^https:\/\/.*\.pages\.dev$/;
 
-// ✅ allow Netlify previews + all netlify subdomains
+// ✅ allow any Netlify site/previews
 const netlifyRegex = /^https:\/\/.*\.netlify\.app$/;
 
 // ✅ CLIENT_URL can be 1 URL or multiple separated by comma
+// Example (Railway variable):
+// CLIENT_URL=https://your-site.netlify.app,http://localhost:5173
 const envClientUrls = (process.env.CLIENT_URL || "")
   .split(",")
   .map((s) => s.trim())
   .filter(Boolean);
 
+// ✅ explicit allow-list (exact matches)
 const allowedOrigins = [
   ...envClientUrls,
 
-  // your domain(s) (optional)
+  // optional domains
   "https://agsisay.com",
   "https://www.agsisay.com",
 
-  // local dev (optional)
+  // local dev
   "http://localhost:3000",
   "http://localhost:5173",
   "http://localhost:5174",
   "http://localhost:5175",
 ].filter(Boolean);
 
+function isOriginAllowed(origin) {
+  // allow Postman/curl/no-origin requests
+  if (!origin) return true;
+
+  // exact matches
+  if (allowedOrigins.includes(origin)) return true;
+
+  // dynamic dev / previews
+  if (viteLocalhostRegex.test(origin)) return true;
+  if (cloudflarePagesRegex.test(origin)) return true;
+  if (netlifyRegex.test(origin)) return true;
+
+  return false;
+}
+
 const corsOptions = {
   origin: (origin, cb) => {
-    // allow Postman/curl/no-origin requests
-    if (!origin) return cb(null, true);
+    const ok = isOriginAllowed(origin);
 
-    // ✅ allow exact matches
-    if (allowedOrigins.includes(origin)) return cb(null, true);
+    if (ok) return cb(null, true);
 
-    // ✅ allow vite ports dynamically (5170-5179)
-    if (viteLocalhostRegex.test(origin)) return cb(null, true);
+    // ✅ super helpful in Railway logs
+    console.log("❌ CORS blocked origin:", origin);
 
-    // ✅ allow Cloudflare Pages previews
-    if (cloudflarePagesRegex.test(origin)) return cb(null, true);
-
-    // ✅ allow any Netlify site/previews
-    if (netlifyRegex.test(origin)) return cb(null, true);
-
-    return cb(null, false);
+    // IMPORTANT: return an Error so it’s visible (instead of cb(null,false))
+    return cb(new Error("CORS blocked: " + origin));
   },
-  credentials: true,
+
+  // ✅ Your frontend uses JWT in Authorization header (NOT cookies)
+  // and axios has withCredentials:false → keep this FALSE
+  credentials: false,
+
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   optionsSuccessStatus: 204,
 };
 
+// ✅ Apply CORS BEFORE routes
 app.use(cors(corsOptions));
-app.options(/.*/, cors(corsOptions));
 
+// ✅ Handle preflight requests for ALL routes (fixes Netlify CORS preflight)
+app.options("*", cors(corsOptions));
+
+// ============================
+// Core Middleware
+// ============================
 app.use(express.json());
 app.use(logger);
 
@@ -262,16 +112,17 @@ app.use(logger);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ============================
-// Health / Info routes
+// Health / Info Routes
 // ============================
 app.get("/", (req, res) => res.send("Evangadi Forum API is running!"));
 
-// ✅ Version endpoint (proves Railway deployed your latest code)
+// ✅ Proves Railway deployed your latest code (and shows commit if available)
 app.get("/api/health/version", (req, res) => {
   res.json({
     ok: true,
     commit: process.env.RAILWAY_GIT_COMMIT_SHA || "no-sha",
     time: new Date().toISOString(),
+    client_url: process.env.CLIENT_URL || "(not set)",
   });
 });
 
@@ -305,7 +156,7 @@ app.get("/api/health/db", async (req, res) => {
       console.error("❌ AggregateError details:");
       err.errors.forEach((e, i) => {
         console.error(
-          `  [${i}] name=${e?.name} code=${e?.code} message=${e?.message}`
+          `  [${i}] name=${e?.name} code=${e?.code} message=${e?.message}`,
         );
       });
     }
@@ -328,7 +179,9 @@ app.get("/api/health/db", async (req, res) => {
 // API Routes
 // ============================
 
+// ✅ Main routes
 app.use("/api/users", userRoutes);
+
 // ✅ Compatibility alias for your current frontend calls (/api/user/...)
 app.use("/api/user", userRoutes);
 
@@ -337,8 +190,10 @@ app.use("/api/answers", answersRoutes);
 app.use("/api/profile", profileRoute);
 
 // ============================
-// 404 + Error handler
+// 404 + Error Handler
 // ============================
+
+// ✅ Not found
 app.use((req, res) => {
   res.status(404).json({
     message: "Route not found",
@@ -347,15 +202,16 @@ app.use((req, res) => {
   });
 });
 
+// ✅ Central error handler
 app.use(errorHandler);
 
 // ============================
-// Start server (keep-alive + debug)
+// Start server (debug-friendly)
 // ============================
 const server = app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
   console.log("CLIENT_URL:", process.env.CLIENT_URL || "(not set)");
-  console.log("Allowed origins:", allowedOrigins);
+  console.log("Allowed origins (exact):", allowedOrigins);
 });
 
 server.on("error", (err) => {
