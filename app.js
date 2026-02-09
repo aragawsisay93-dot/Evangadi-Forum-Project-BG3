@@ -1,4 +1,4 @@
-// app.js (FULL UPDATED — backend entry file)
+// app.js (FULL UPDATED — backend entry file, with RELIABLE Netlify CORS preflight fix)
 import "dotenv/config";
 
 import express from "express";
@@ -24,7 +24,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ============================
-// CORS (Netlify + local + previews)
+// CORS (Netlify + local + previews) — FIXED FOR PREFLIGHT
 // ============================
 
 // ✅ allow any localhost Vite port 5170-5179
@@ -80,15 +80,14 @@ const corsOptions = {
 
     if (ok) return cb(null, true);
 
-    // ✅ super helpful in Railway logs
+    // ✅ debug in Railway logs
     console.log("❌ CORS blocked origin:", origin);
 
-    // IMPORTANT: return an Error so it’s visible (instead of cb(null,false))
-    return cb(new Error("CORS blocked: " + origin));
+    // ✅ do NOT throw error — just block
+    return cb(null, false);
   },
 
-  // ✅ Your frontend uses JWT in Authorization header (NOT cookies)
-  // and axios has withCredentials:false → keep this FALSE
+  // ✅ Frontend uses JWT Authorization header (NOT cookies)
   credentials: false,
 
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -96,11 +95,34 @@ const corsOptions = {
   optionsSuccessStatus: 204,
 };
 
-// ✅ Apply CORS BEFORE routes
+// ✅ Apply CORS for normal requests
 app.use(cors(corsOptions));
 
-// ✅ Handle preflight requests for ALL routes (fixes Netlify CORS preflight)
-app.options("*", cors(corsOptions));
+// ✅ HARDENED preflight handler (Express 5 safe)
+// This guarantees OPTIONS gets Access-Control-* headers
+app.use((req, res, next) => {
+  if (req.method !== "OPTIONS") return next();
+
+  const origin = req.headers.origin;
+
+  if (isOriginAllowed(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type,Authorization"
+    );
+    res.setHeader("Access-Control-Max-Age", "86400");
+    return res.status(204).end();
+  }
+
+  console.log("❌ Preflight blocked origin:", origin);
+  return res.status(403).end();
+});
 
 // ============================
 // Core Middleware
@@ -156,7 +178,7 @@ app.get("/api/health/db", async (req, res) => {
       console.error("❌ AggregateError details:");
       err.errors.forEach((e, i) => {
         console.error(
-          `  [${i}] name=${e?.name} code=${e?.code} message=${e?.message}`,
+          `  [${i}] name=${e?.name} code=${e?.code} message=${e?.message}`
         );
       });
     }
@@ -227,3 +249,4 @@ process.on("uncaughtException", (err) => {
 process.on("unhandledRejection", (err) => {
   console.error("❌ Unhandled rejection:", err);
 });
+
